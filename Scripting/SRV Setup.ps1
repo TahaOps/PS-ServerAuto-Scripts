@@ -1,9 +1,9 @@
 ﻿<#
 Author : Taha Ghazali
 Creation Date : 2019-10-11
-Version : 1.2.4
-Edition Date : 2019-10-22
-Works with : PS 4.0
+Version : 1.3
+Edition Date : 2019-10-25
+(On scripter's 24th birthday)
 #>
 
 # TASK - Set execution policy
@@ -11,7 +11,18 @@ Write-Host "Modifying execution policy in order to run all the scripts succesful
 Write-Host "----------------------------------------------------------------------"
 "";"";""
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
-# PROMPT - List AD Computers
+
+# TASK - Creating the directory and the environment variable
+Write-Host "Creating the directory and the environment variable"
+Write-Host "----------------------------------------------------------------------"
+"";"";""
+mkdir "$env:HOMEDRIVE\Scripting"
+[System.Environment]::SetEnvironmentVariable("Scripting","$env:HOMEDRIVE\Scripting",[System.EnvironmentVariableTarget]::User)
+
+# TASK - Customizing Prompt
+function prompt{'SCRIPT 1: ' + (get-location) + '> '}
+
+# PROMPT - List AD Computers / NOT OPTIMIZED YET
 $BoolListAdCom = Read-Host -Prompt "0. Do you want to list the computers/servers of the Domain ? (y/n)"
 if ($BoolListAdCom -match "[yY]")
 {
@@ -66,6 +77,7 @@ Start-Sleep -Seconds 3
 
 # TASK - Computer Name
 Rename-Computer -NewName $ComputerName 
+
 # TASK - IPs
 New-NetIPAddress –InterfaceAlias “Ethernet0” –IPAddress $IPAddr –PrefixLength $SubnetMask -DefaultGateway $GTAddr 
 Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses $DNSAddr 
@@ -85,7 +97,7 @@ Write-Host "Script ended."
 
 # CRON TASK
 Write-Host "Now we are scheduling a new script at boot in order to include this computer ($ComputerName) to the the domain"
-$Step2 = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-File '$env:USERPROFILE\Domain Merger.ps1'"
+$Step2 = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-File '$env:HOMEDRIVE\Scripting\Domain Merger.ps1'"
 $trigger = New-ScheduledTaskTrigger -AtLogon
 Register-ScheduledTask -TaskName "Domain Merger" -Action $Step2 -Trigger $trigger
 Restart-Computer
