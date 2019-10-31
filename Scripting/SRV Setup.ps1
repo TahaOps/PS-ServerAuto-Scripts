@@ -2,22 +2,8 @@
 Author : Taha Ghazali
 Creation Date : 2019-10-11
 Version : 1.3
-Edition Date : 2019-10-25
-(On scripter's 24th birthday)
+Edition Date : 2019-10-28
 #>
-
-# TASK - Set execution policy
-Write-Host "Modifying execution policy in order to run all the scripts succesfully"
-Write-Host "----------------------------------------------------------------------"
-"";"";""
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted
-
-# TASK - Creating the directory and the environment variable
-Write-Host "Creating the directory and the environment variable"
-Write-Host "----------------------------------------------------------------------"
-"";"";""
-mkdir "$env:HOMEDRIVE\Scripting"
-[System.Environment]::SetEnvironmentVariable("Scripting","$env:HOMEDRIVE\Scripting",[System.EnvironmentVariableTarget]::User)
 
 # TASK - Customizing Prompt
 function prompt{'SCRIPT 1: ' + (get-location) + '> '}
