@@ -2,8 +2,8 @@
 Author : Taha Ghazali
 Creation Date : 2019-10-25
 (On scripter's 24th birthday)
-Version : 1.01
-Edition Date : 2019-10-31
+Version : 1.1.0.2
+Edition Date : 2019-11-04
 #>
 
 # FUNCTIONS
@@ -28,9 +28,9 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 Write-Host "Creating the directory and the environment variable"
 Write-Host "----------------------------------------------------------------------"
 "";"";""
-if (-Not (Test-Path -Path "$env:HOMEDRIVE\Scripting") -And (Test-Path -Path env:Scripting)){
-        mkdir "$env:HOMEDRIVE\Scripting"
-        [System.Environment]::SetEnvironmentVariable("Scripting","$env:HOMEDRIVE\Scripting",[System.EnvironmentVariableTarget]::User)
+if (-Not ((Test-Path -Path "$env:HOMEDRIVE\Scripting") -And (Test-Path env:\Scripting))){
+        mkdir "$env:HOMEDRIVE\Scripting\"
+        [System.Environment]::SetEnvironmentVariable("Scripting","$env:HOMEDRIVE\Scripting\")
         WriteToLog -AddLine "Setting environment on $env:HOMEDRIVE drive"
         WriteToLog -AddLine "Items on current drive ($env:HOMEDRIVE): $(Get-ChildItem -Path "$env:HOMEDRIVE\"|Sort LastWriteTime -Descending|Format-Table LastWriteTime, Name, Directory|Out-String)"
 }
@@ -68,11 +68,12 @@ if ((Test-Path -Path $CurrentLocation\$($Files[0])) -And
             Write-Warning "Your current location is $CurrentLocation however the script should run into the $env:Scripting directory."
             Write-Host "This installer will move scripting files and run the first script"
 #           Copy files and writing some lines to the console
-            Copy-Item $Files -Destination $env:Scripting
+            ForEach ($File in $Files) {
+            Copy-Item $File -Destination "$env:Scripting\" }
             Write-Host "Files has been copied succesfully. You should delete files from this folder"
             Write-Host "Moving to the right folder"
 #           Doing some "cd"            
-            Set-Location $env:Scripting
+            Set-Location "$env:Scripting"
 #           Launching the first script
             Powershell.exe -File $CurrentLocation\$($Files[0])}} # A previous feature was meant to be implemented in order to check the state of the copy. It will be upgraded soon
 # TASK - 1) Check if files are present in the current location
